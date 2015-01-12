@@ -36,16 +36,16 @@
         </style>
     </head>
     <body>
-        <div id="barDiv">
-            <p>Click on this text to update the chart with new data values (once).</p>
-        </div>
-
         <div id="histDiv">
             <ul id="utcMetric"> 
                 <li class = "layer" id = "Can_P"> Percent Canopy </li>
                 <li class = "layer" id = "Imperv_P"> Percent Impervious </li>
                 <li class = "layer" id = "Grass_P"> Percent Grass </li>
             </ul>
+        </div>
+
+        <div id="barDiv">
+        </div>
 
         <script type="text/javascript">
             // D3 code goes here - all based on examples from Scott Murray's Interactive Data Visualization for Web   http://chimera.labs.oreilly.com/books/1230000000345
@@ -100,6 +100,22 @@
                     return d.properties.Can_P
                 });
 
+                //SET UP THE COLOR SCALES THAT TAKE INPUT VALUE AND OUTPUT A COLOR
+                //color scale for Imperv_P value
+                var colorImperv = d3.scale.quantize()
+                    .range(["#b0aa9e","#9d9f9c","#8b9498","#798993","#677d8d", "#567287","#46687f","#365d77","#26526d","#144763"])
+                    .domain([0, 100]);
+
+                //color scale for the Can_P value
+                var colorCan = d3.scale.quantize()
+                    .range(["#adac8f", "#98a381", "#849974", "#718e67", "#5f845b", "#4e794f", "#3e6e44", "#2g633a", "#205831", "#124d28"])
+                    .domain([0, 100]);
+
+                //color scale for Grass_P value
+                var colorGrass = d3.scale.quantize()
+                    .range(["#e5e09b", "#cfcb8b", "#b9b67b", "#a4a16c", "#8f8d5d", "#7b794f", "#676641", "#545434", "#424227", "#31311c"])
+                    .domain([0, 100]);
+
                 var xScale = d3.scale.ordinal()
                     .domain(d3.range(dImperv_P.length))
                     .rangeRoundBands([0, w], 0.05);
@@ -124,8 +140,11 @@
                         return yScale(d);
                     })
                     .attr("fill", function(d) {
-                        return "rgb(0, 0, " + d3.round(d) + ")";
+                        return colorImperv(d);
                     });
+                    // .attr("fill", function(d) {
+                    //     return "rgb(0, 0, " + d3.round(d) + ")";
+                    // });
                     
                 //create text labels
                 svgBar.selectAll("text")
@@ -220,7 +239,7 @@
                         return (h - padding) - yScaleHist(d.length);
                     })
                     .attr("fill", function(d) {
-                        return "rgb(0, 0, " + d3.round(d.y) + ")";
+                        return colorImperv(d.x);
                     });
 
                 //create text labels
@@ -251,114 +270,7 @@
                         .attr("transform", "translate(" + padding + ",0)")
                         .call(yAxis);
 
-
-                // d3.select("#Can_P")
-                //     .on("click", function() {
-                //     console.log(this);
-
-                //     //New values for dataset
-                //     var dCan_P = dataset.features.map(function (d) {
-                //             return d.properties.Can_P
-                //         });
-
-                //     // var dCanHist = d3.layout.histogram()
-                //     //     .bins(xScaleHist.ticks(10))
-                //     //     (dCan_P);
-
-                //     var dCanHist = d3.layout.histogram()
-                //         .bins(xScaleHist.ticks(10))
-                //         (dataset.features.map(function (d) {
-                //             return d.properties.Can_P
-                //         }));
-
-                //     var yScaleHist = d3.scale.linear()
-                //         .domain([0, d3.max(dCanHist, function(d) { return d.length; })])
-                //         .range([h - padding, padding])
-                //         .nice();
-
-                //     //Update all rects
-                //     svgHist.selectAll("rect")
-                //         .data(dCanHist)
-                //         .transition()
-                //         .duration(1000)
-                //         .attr("y", function(d) {
-                //             return yScaleHist(d.length);
-                //         })
-                //         .attr("height", function(d) {
-                //             return (h - padding) - yScaleHist(d.length);
-                //         })
-                //         .attr("fill", function(d) {
-                //             return "rgb(0, 0, " + d3.round(d.y) + ")";
-                //         });
-
-                //     svgHist.selectAll("text")
-                //         .data(dCanHist)
-                //         .transition()
-                //         .duration(3000)
-                //         .text(function(d) {
-                //             return d3.round(d.length);
-                //         })
-                //         .attr("y", function(d) {
-                //             return yScaleHist(d.length) -10;              
-                //         });
-
-                //     yAxis.scale(yScaleHist);
-
-                //     yAxis2.transition()
-                //         .duration(3000)
-                //         .call(yAxis);
-                // })
-
-                
-                // d3.select("#Imperv_P")
-                //     .on("click", function() {
-                //     console.log(this);
-
-                //     //New values for dataset
-                //     // var dCan_P = dataset.features.map(function (d) {
-                //     //         return d.properties.Imperv_P
-                //     //     });
-
-                //     // var dCanHist = d3.layout.histogram()
-                //     //     .bins(xScaleHist.ticks(10))
-                //     //     (dCan_P);
-
-                //     var yScaleHist = d3.scale.linear()
-                //         .domain([0, d3.max(dImpervHist, function(d) { return d.length; })])
-                //         .range([h - padding, padding])
-                //         .nice();
-
-                //     //Update all rects
-                //     svgHist.selectAll("rect")
-                //         .data(dImpervHist)
-                //         .transition()
-                //         .duration(1000)
-                //         .attr("y", function(d) {
-                //             return yScaleHist(d.length);
-                //         })
-                //         .attr("height", function(d) {
-                //             return (h - padding) - yScaleHist(d.length);
-                //         })
-                //         .attr("fill", function(d) {
-                //             return "rgb(0, 0, " + d3.round(d.y) + ")";
-                //         });
-
-                //     svgHist.selectAll("text")
-                //         .data(dImpervHist)
-                //         .transition()
-                //         .duration(3000)
-                //         .text(function(d) {
-                //             return d3.round(d.length);
-                //         })
-                //         .attr("y", function(d) {
-                //             return yScaleHist(d.length) -10;              
-                //         });
-
-                //     yAxis.scale(yScaleHist);
-
-                //     yAxis2.call(yAxis);
-                // })
-
+                //START update on click code
                 //listeners for layer li clicks
                 $(".layer").on("click", function() {
                     console.log(this)
@@ -366,19 +278,7 @@
                     layerID = $(this).attr("id");
                     window.layerID = layerID;
 
-                // d3.select(".layer")
-                //     .on("click", function() {
-                //     console.log(this);
-
-                    //New values for dataset
-                    // var dCan_P = dataset.features.map(function (d) {
-                    //         return d.properties.Imperv_P
-                    //     });
-
-                    // thisDataSet = dataset.features.map(function (d) {
-                    //         return ('d.properties.'.concat(layerID)).valueOf()
-                    //     });
-
+                    //this switches the data values depending on the "id" of the clicked DOM element
                     switch(layerID){
                         case "Grass_P":
                             thisDataSet = dGrass_P;
@@ -391,15 +291,9 @@
                             break;
                     }
 
-                    // if (layerID == "Grass_P") thisDataSet = dGrass_P;
                     window.thisDataSet = thisDataSet;
 
-                    // dataHist = d3.layout.histogram()
-                    //     .bins(xScaleHist.ticks(10))
-                    //     (dataset.features.map(function (d) {
-                    //         return ("d.properties."+layerID).valueOf()
-                    //     }));
-
+                    // format the data into a histogram
                     dataHist = d3.layout.histogram()
                         .bins(xScaleHist.ticks(10))
                         (thisDataSet);
@@ -411,7 +305,7 @@
                         .range([h - padding, padding])
                         .nice();
 
-                    //Update all rects
+                    //Update all histogram rects
                     svgHist.selectAll("rect")
                         .data(dataHist)
                         .transition()
@@ -423,9 +317,21 @@
                             return (h - padding) - yScaleHist(d.length);
                         })
                         .attr("fill", function(d) {
-                            return "rgb(0, 0, " + d3.round(d.y) + ")";
+                            switch(layerID){
+                                case "Grass_P":
+                                    return colorGrass(d.x);
+                                    break;
+                                case "Imperv_P":
+                                    return colorImperv(d.x);
+                                    break;
+                                case "Can_P":
+                                    return  colorCan(d.x);
+                                    break;
+                            }
+                            //return colorImperv(d.x);
                         });
 
+                    //update histogram bar labels
                     svgHist.selectAll("text")
                         .data(dataHist)
                         .transition()
@@ -437,11 +343,50 @@
                             return yScaleHist(d.length) -10;              
                         });
 
+                    //update histogram axis scale
                     yAxis.scale(yScaleHist);
-
                     yAxis2.call(yAxis);
-                // })
-                })
+
+                    //Update all BAR CHART rects
+                    svgBar.selectAll("rect")
+                        .data(thisDataSet)
+                        .transition()
+                        .duration(1000)
+                        .attr("y", function(d) {
+                            return h - yScale(d);
+                        })
+                        .attr("height", function(d) {
+                            return yScale(d);
+                        })
+                        .attr("fill", function(d) {
+                            switch(layerID){
+                                case "Grass_P":
+                                    return colorGrass(d);
+                                    break;
+                                case "Imperv_P":
+                                    return colorImperv(d);
+                                    break;
+                                case "Can_P":
+                                    return  colorCan(d);
+                                    break;
+                            }
+                        });
+                    
+
+                    svgBar.selectAll("text")
+                        .data(thisDataSet)
+                        .transition()
+                        .duration(3000)
+                        .text(function(d) {
+                            return d3.round(d);
+                        })
+                        .attr("y", function(d) {
+                            return h - yScale(d) + 14;              // +14
+                        })
+                        .attr("x", function(d, i) {
+                            return xScale(i) + xScale.rangeBand() / 2;
+                        })
+                }) //END update on click code
 
             });
 
