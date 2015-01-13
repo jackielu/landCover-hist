@@ -4,9 +4,10 @@ COMPLETED BITS
 1) includes "updates on click" functionality 
 2) color for histogram are cover type specific
 3) have clicks also update the main bar chart
+4) break code up into different files
 
 TO BE DONE BITS
-...  break code up into different files
+...  add hover interactivity
 ...  add the cover types that remain
 ...  work in the skeleton styling
 ...  add the map
