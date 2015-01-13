@@ -92,9 +92,7 @@ svgBar.selectAll("rect")
     .attr("fill", function(d) {
         return colorImperv(d);
     });
-    // .attr("fill", function(d) {
-    //     return "rgb(0, 0, " + d3.round(d) + ")";
-    // });
+
     
 //create text labels
 svgBar.selectAll("text")
@@ -190,6 +188,15 @@ svgHist.selectAll("rect")
     })
     .attr("fill", function(d) {
         return colorImperv(d.x);
+    })
+    .on('mouseover', function (d) {
+        d3.selectAll("[fill='"+colorImperv(d.x)+"']")
+        .style("fill","#F1B6DA");
+        // console.log(d3.selectAll("[bin='"+colorCan(d.x)+"']"))
+    })
+    .on('mouseout', function (d) {
+        d3.selectAll("[fill='"+colorImperv(d.x)+"']")
+        .style("fill",colorImperv(d.x));
     });
 
 //create text labels
@@ -219,6 +226,7 @@ var yAxis2 = svgHist.append("g")
         .attr("class", "y axis")
         .attr("transform", "translate(" + padding + ",0)")
         .call(yAxis);
+
 
 //START update on click code
 //listeners for layer li clicks
@@ -278,7 +286,38 @@ $(".layer").on("click", function() {
                     return  colorCan(d.x);
                     break;
             }
-            //return colorImperv(d.x);
+        // })
+        // .on('mouseover', function(d) {
+        //     switch(layerID){
+        //         case "Grass_P":
+        //             return d3.selectAll("[fill='"+colorGrass(d.x)+"']")
+        //                 .style("fill","#F1B6DA");
+        //             break;
+        //         case "Imperv_P":
+        //             return d3.selectAll("[fill='"+colorImperv(d.x)+"']")
+        //                 .style("fill","#F1B6DA");
+        //             break;
+        //         case "Can_P":
+        //             return d3.selectAll("[fill='"+colorCan(d.x)+"']")
+        //                 .style("fill","#F1B6DA");
+        //             break;
+        //     }
+        // })
+        // .on('mouseout', function(d) {
+        //     switch(layerID){
+        //         case "Grass_P":
+        //             return d3.selectAll("[fill='"+colorGrass(d.x)+"']")
+        //                 .style("fill",colorGrass(d.x));
+        //             break;
+        //         case "Imperv_P":
+        //             return d3.selectAll("[fill='"+colorImperv(d.x)+"']")
+        //                 .style("fill",colorImperv(d.x));
+        //             break;
+        //         case "Can_P":
+        //             return d3.selectAll("[fill='"+colorCan(d.x)+"']")
+        //                 .style("fill",colorCan(d.x));
+        //             break;
+        //     }
         });
 
     //update histogram bar labels

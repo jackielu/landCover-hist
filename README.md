@@ -6,8 +6,13 @@ COMPLETED BITS
 3) have clicks also update the main bar chart
 4) break code up into different files
 
-TO BE DONE BITS
+
+IN PROGRESS
 ...  add hover interactivity
+--> issue:  adding mouseover and mouseout events works OK on the initial set of rects in the histogram; but adding mouseover and mouseout events with "switch" functions seems to break the updating in the bar chart
+
+
+TO BE DONE BITS
 ...  add the cover types that remain
 ...  work in the skeleton styling
 ...  add the map
