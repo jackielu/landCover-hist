@@ -283,22 +283,22 @@ $(".layer").on("click", function() {
                     return colorImperv(d.x);
                     break;
                 case "Can_P":
-                    return  colorCan(d.x);
+                    return colorCan(d.x);
                     break;
             }
         // })
         // .on('mouseover', function(d) {
         //     switch(layerID){
         //         case "Grass_P":
-        //             return d3.selectAll("[fill='"+colorGrass(d.x)+"']")
+        //             d3.selectAll("[fill='"+colorGrass(d.x)+"']")
         //                 .style("fill","#F1B6DA");
         //             break;
         //         case "Imperv_P":
-        //             return d3.selectAll("[fill='"+colorImperv(d.x)+"']")
+        //             d3.selectAll("[fill='"+colorImperv(d.x)+"']")
         //                 .style("fill","#F1B6DA");
         //             break;
         //         case "Can_P":
-        //             return d3.selectAll("[fill='"+colorCan(d.x)+"']")
+        //             d3.selectAll("[fill='"+colorCan(d.x)+"']")
         //                 .style("fill","#F1B6DA");
         //             break;
         //     }
@@ -306,16 +306,16 @@ $(".layer").on("click", function() {
         // .on('mouseout', function(d) {
         //     switch(layerID){
         //         case "Grass_P":
-        //             return d3.selectAll("[fill='"+colorGrass(d.x)+"']")
-        //                 .style("fill",colorGrass(d.x));
+        //             d3.selectAll("[fill='"+colorGrass(d.x)+"']")
+        //                 .style("fill", colorGrass(d.x));
         //             break;
         //         case "Imperv_P":
-        //             return d3.selectAll("[fill='"+colorImperv(d.x)+"']")
-        //                 .style("fill",colorImperv(d.x));
+        //             d3.selectAll("[fill='"+colorImperv(d.x)+"']")
+        //                 .style("fill", colorImperv(d.x));
         //             break;
         //         case "Can_P":
-        //             return d3.selectAll("[fill='"+colorCan(d.x)+"']")
-        //                 .style("fill",colorCan(d.x));
+        //             d3.selectAll("[fill='"+colorCan(d.x)+"']")
+        //                 .style("fill", colorCan(d.x));
         //             break;
         //     }
         });
@@ -379,96 +379,3 @@ $(".layer").on("click", function() {
 
 });
 
-
-
-// //start circle dataset
-// var dScatter = [
-//       [ 5,     20 ],
-//       [ 480,   90 ],
-//       [ 250,   50 ],
-//       [ 100,   33 ],
-//       [ 330,   95 ],
-//       [ 410,   12 ],
-//       [ 475,   44 ],
-//       [ 25,    67 ],
-//       [ 85,    21 ],
-//       [ 220,   88 ]
-//   ];
-
-// //Dynamic, random dataset
-// var dRandom = [];
-// var numDataPoints = 50;
-// var xRange = Math.random() * 1000;
-// var yRange = Math.random() * 1000;
-// for (var i = 0; i < numDataPoints; i++) {
-//     var newNumber1 = Math.floor(Math.random() * xRange);
-//     var newNumber2 = Math.floor(Math.random() * yRange);
-//     dRandom.push([newNumber1, newNumber2]);
-// }
-
-// //Create SVG element
-// var svgScatter = d3.select("body")
-//     .append("svg")
-//     .attr("width", wS)
-//     .attr("height", h);
-
-// var xScale = d3.scale.linear()
-//     .domain([0, d3.max(dRandom, function(d) { return d[0]; })])
-//     .range([padding, wS - padding*2])
-//     .nice();
-
-// var yScale = d3.scale.linear()
-//     .domain([0, d3.max(dRandom, function(d) { return d[1]; })])
-//     .range([h - padding, padding]);
-
-// var xAxis = d3.svg.axis()
-//     .scale(xScale)
-//     .orient("bottom");
-
-// var yAxis = d3.svg.axis()
-//     .scale(yScale)
-//     .orient("left")
-//     .ticks(5);
-
-// svgScatter.selectAll("circle")  // <-- No longer "rect"
-//     .data(dRandom)
-//     .enter()
-//     .append("circle")  
-//     .attr("cx", function(d) {
-//         return xScale(d[0]);
-//     })
-//     .attr("cy", function(d) {
-//         return yScale(d[1]);
-//     })
-//     .attr("r", 5)
-//     .attr("r", function(d) {
-//         return Math.sqrt(h - d[1]);
-//     });
-
-// svgScatter.selectAll("text")
-//     .data(dRandom)
-//     .enter()
-//     .append("text")
-//     .text(function(d) {
-//         return d[0] + "," + d[1];
-//     })
-//     .attr("x", function(d) {
-//         return xScale(d[0]);
-//     })
-//     .attr("y", function(d) {
-//         return yScale(d[1]);
-//     })
-//     .attr("font-family", "sans-serif")
-//     .attr("font-size", "10px")
-//     .attr("fill","red")
-
-// svgScatter.append("g")
-//     .attr("class","axis")
-//     .attr("transform", "translate(0," + (h - padding) + ")")
-//     .call(xAxis)
-
-// //Create Y axis
-// svgScatter.append("g")
-//     .attr("class", "axis")
-//     .attr("transform", "translate(" + padding + ",0)")
-//     .call(yAxis);
