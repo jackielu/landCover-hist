@@ -92,6 +92,14 @@ svgBar.selectAll("rect")
     })
     .attr("fill", function(d) {
         return colorImperv(d);
+    })
+    .on('mouseover', function (d) {
+        d3.selectAll("[fill='"+colorImperv(d)+"']")
+        .style("fill","#F1B6DA");
+    })
+    .on('mouseout', function (d) {
+        d3.selectAll("[fill='"+colorImperv(d)+"']")
+        .style("fill",colorImperv(d));
     });
 
     
@@ -107,7 +115,7 @@ svgBar.selectAll("text")
         return xScale(i) + (w / dImperv_P.length - barPadding) / 2;
         })
     .attr("y", function(d) {
-        return h - yScale(d) + 14;              // +14
+        return h - yScale(d) + 14;              
     })
     .attr("font-family", "sans-serif")
     .attr("font-size", "11px")
@@ -139,23 +147,18 @@ var yScaleHist = d3.scale.linear()
     .range([h - padding, padding])
     .nice();
 
-window.dImpervHist = dImpervHist;
+//window.dImpervHist = dImpervHist;
 
 //create the bars
 svgHist.selectAll("rect")
     .data(dImpervHist)
     .enter()
     .append("rect")
-    // .attr("x", function(d, i) {
-    //     return xScaleHist(i);
-    // })
     .attr("x", function(d) { return xScaleHist(d.x)})
     .attr("y", function(d) {
         return yScaleHist(d.length);
     })
     .attr("width", xScaleHist(dImpervHist[0].dx)/2)
-    //.attr("width", xScaleHist(wS / dImpervHist.length))
-    //.attr("width", dImpervHist[0].dx)
     .attr("height", function(d) {
         return (h - padding) - yScaleHist(d.length);
     })
@@ -357,10 +360,20 @@ d3.select("#Can_P") //start d3.select for #Can_P
             .attr("height", function(d) {
                 return yScale(d);
             })
-            .attr("fill", function(d) {   // <-- Down here!
+            .attr("fill", function(d) {   
                 return colorCan(d);
             });
-        
+
+        svgBar.selectAll("rect")
+            .on('mouseover', function (d) {
+                d3.selectAll("[fill='"+colorCan(d)+"']")
+                .style("fill","#F1B6DA");
+            })
+            .on('mouseout', function (d) {
+                d3.selectAll("[fill='"+colorCan(d)+"']")
+                .style("fill",colorCan(d));
+            });
+
         svgBar.selectAll("text")
             .data(dCan_P)
             .transition()
@@ -379,6 +392,10 @@ d3.select("#Can_P") //start d3.select for #Can_P
             .domain([0, d3.max(dCanHist, function(d) { return d.length; })])
             .range([h - padding, padding])
             .nice();
+
+        //update histogram axis scale
+        yAxis.scale(yScaleHist);
+        yAxis2.transition().duration(3000).call(yAxis);
 
         svgHist.selectAll("rect")
             .data(dCanHist)
@@ -432,6 +449,16 @@ d3.select("#Imperv_P") //start d3.select for #Imperv_P
             .attr("fill", function(d) {   
                 return colorImperv(d);
             });
+
+        svgBar.selectAll("rect")
+            .on('mouseover', function (d) {
+                d3.selectAll("[fill='"+colorImperv(d)+"']")
+                .style("fill","#F1B6DA");
+            })
+            .on('mouseout', function (d) {
+                d3.selectAll("[fill='"+colorImperv(d)+"']")
+                .style("fill",colorImperv(d));
+            });
         
         svgBar.selectAll("text")
             .data(dImperv_P)
@@ -451,6 +478,10 @@ d3.select("#Imperv_P") //start d3.select for #Imperv_P
             .domain([0, d3.max(dImpervHist, function(d) { return d.length; })])
             .range([h - padding, padding])
             .nice();
+
+        //update histogram axis scale
+        yAxis.scale(yScaleHist);
+        yAxis2.transition().duration(3000).call(yAxis);
 
         svgHist.selectAll("rect")
             .data(dImpervHist)
@@ -504,6 +535,16 @@ d3.select("#Grass_P") //start d3.select for #Grass_P
             .attr("fill", function(d) {   
                 return colorGrass(d);
             });
+
+        svgBar.selectAll("rect")
+            .on('mouseover', function (d) {
+                d3.selectAll("[fill='"+colorGrass(d)+"']")
+                .style("fill","#F1B6DA");
+            })
+            .on('mouseout', function (d) {
+                d3.selectAll("[fill='"+colorGrass(d)+"']")
+                .style("fill",colorGrass(d));
+            });
         
         svgBar.selectAll("text")
             .data(dGrass_P)
@@ -524,6 +565,10 @@ d3.select("#Grass_P") //start d3.select for #Grass_P
             .domain([0, d3.max(dGrassHist, function(d) { return d.length; })])
             .range([h - padding, padding])
             .nice();
+
+        //update histogram axis scale
+        yAxis.scale(yScaleHist);
+        yAxis2.transition().duration(3000).call(yAxis);
 
         svgHist.selectAll("rect")
             .data(dGrassHist)

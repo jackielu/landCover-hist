@@ -8,11 +8,12 @@ COMPLETED BITS
 2) color for histogram are cover type specific
 3) have clicks also update the main bar chart
 4) break code up into different files
+5) hover interactivity btwn histogram and bar graph
+6) transitions to axis
 
 
 IN PROGRESS
-...  add hover interactivity between the histogram (1st graph) and the bar graph (2nd graph)
-- hover works on histogram; need to add for bar graph
+
 
 
 
