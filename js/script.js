@@ -30,7 +30,7 @@ var layerID, dataID;  //var for saving button click IDs
 var dataHist; //var for storing histogram values
 
 //CALL THE LandCover Summary DATA
-d3.json("data/landcoversumm.geojson", function(data) {
+d3.json("data/landcoversumm.geojson", function(data) { //start of D3.json call
 dataset = data;
 //window.dataset = dataset;
 //console.log(dataset);
@@ -113,44 +113,7 @@ svgBar.selectAll("text")
     .attr("fill", "white")
     .attr("text-anchor", "middle");
 
-d3.select("p")
-    .on("click", function() {
 
-    //New values for dataset
-    var dCan_P = dataset.features.map(function (d) {
-            return d.properties.Can_P
-        });
-
-    //Update all rects
-    svgBar.selectAll("rect")
-        .data(dCan_P)
-        .transition()
-        .duration(1000)
-        .attr("y", function(d) {
-            return h - yScale(d);
-        })
-        .attr("height", function(d) {
-            return yScale(d);
-        })
-        .attr("fill", function(d) {   // <-- Down here!
-            return "rgb(0, 0, " + (d * 10) + ")";
-        });
-    
-
-    svgBar.selectAll("text")
-        .data(dCan_P)
-        .transition()
-        .duration(3000)
-        .text(function(d) {
-            return d3.round(d);
-        })
-        .attr("y", function(d) {
-            return h - yScale(d) + 14;              // +14
-        })
-        .attr("x", function(d, i) {
-            return xScale(i) + xScale.rangeBand() / 2;
-        })
-    });
 
 //code for creating histogram
 var xScaleHist = d3.scale.linear()
@@ -231,10 +194,11 @@ var yAxis2 = svgHist.append("g")
 //START update on click code
 //listeners for layer li clicks
 $(".layer").on("click", function() {
-    console.log(this)
+    console.log(this);
 
     layerID = $(this).attr("id");
-    window.layerID = layerID;
+    //window.layerID = layerID;
+    console.log(layerID);
 
     //this switches the data values depending on the "id" of the clicked DOM element
     switch(layerID){
@@ -249,7 +213,8 @@ $(".layer").on("click", function() {
             break;
     }
 
-    window.thisDataSet = thisDataSet;
+    //window.thisDataSet = thisDataSet;
+    console.log(thisDataSet);
 
     // format the data into a histogram
     dataHist = d3.layout.histogram()
@@ -263,7 +228,7 @@ $(".layer").on("click", function() {
         .range([h - padding, padding])
         .nice();
 
-    //Update all histogram rects
+    //Update all histogram rect values with selected dataset
     svgHist.selectAll("rect")
         .data(dataHist)
         .transition()
@@ -273,52 +238,56 @@ $(".layer").on("click", function() {
         })
         .attr("height", function(d) {
             return (h - padding) - yScaleHist(d.length);
-        })
-        .attr("fill", function(d) {
-            switch(layerID){
-                case "Grass_P":
-                    return colorGrass(d.x);
-                    break;
-                case "Imperv_P":
-                    return colorImperv(d.x);
-                    break;
-                case "Can_P":
-                    return colorCan(d.x);
-                    break;
-            }
-        // })
-        // .on('mouseover', function(d) {
-        //     switch(layerID){
-        //         case "Grass_P":
-        //             d3.selectAll("[fill='"+colorGrass(d.x)+"']")
-        //                 .style("fill","#F1B6DA");
-        //             break;
-        //         case "Imperv_P":
-        //             d3.selectAll("[fill='"+colorImperv(d.x)+"']")
-        //                 .style("fill","#F1B6DA");
-        //             break;
-        //         case "Can_P":
-        //             d3.selectAll("[fill='"+colorCan(d.x)+"']")
-        //                 .style("fill","#F1B6DA");
-        //             break;
-        //     }
-        // })
-        // .on('mouseout', function(d) {
-        //     switch(layerID){
-        //         case "Grass_P":
-        //             d3.selectAll("[fill='"+colorGrass(d.x)+"']")
-        //                 .style("fill", colorGrass(d.x));
-        //             break;
-        //         case "Imperv_P":
-        //             d3.selectAll("[fill='"+colorImperv(d.x)+"']")
-        //                 .style("fill", colorImperv(d.x));
-        //             break;
-        //         case "Can_P":
-        //             d3.selectAll("[fill='"+colorCan(d.x)+"']")
-        //                 .style("fill", colorCan(d.x));
-        //             break;
-        //     }
         });
+
+
+    //style all histogram rect values based on color scale for selected dataset
+    switch(layerID){
+        case "Grass_P":
+            svgHist.selectAll("rect")
+                .attr("fill", function(d){
+                    return colorGrass(d.x);
+                })
+                .on('mouseover', function(d) {
+                    d3.selectAll("[fill='"+colorGrass(d.x)+"']")
+                    .style("fill","#F1B6DA");
+                })
+                .on('mouseout', function(d) {
+                    d3.selectAll("[fill='"+colorGrass(d.x)+"']")
+                    .style("fill", colorGrass(d.x));
+                });
+            break;
+        case "Imperv_P":
+            svgHist.selectAll("rect")
+                .attr("fill", function(d){
+                    return colorImperv(d.x);
+                })
+                .on('mouseover', function(d) {
+                    d3.selectAll("[fill='"+colorImperv(d.x)+"']")
+                    .style("fill","#F1B6DA");
+                })
+                .on('mouseout', function(d) {
+                    d3.selectAll("[fill='"+colorImperv(d.x)+"']")
+                    .style("fill", colorImperv(d.x));
+                });
+            break;
+        case "Can_P":
+            svgHist.selectAll("rect")
+                .attr("fill", function(d){
+                    return colorCan(d.x);
+                })
+                .on('mouseover', function(d) {
+                    d3.selectAll("[fill='"+colorCan(d.x)+"']")
+                    .style("fill","#F1B6DA");
+                })
+                .on('mouseout', function(d) {
+                    d3.selectAll("[fill='"+colorCan(d.x)+"']")
+                    .style("fill", colorCan(d.x));
+                });
+            break;
+    }
+
+
 
     //update histogram bar labels
     svgHist.selectAll("text")
@@ -377,5 +346,44 @@ $(".layer").on("click", function() {
         })
 }) //END update on click code
 
-});
+
+// // OLD D3 based CODE FOR UPDATE ON CLICK
+// d3.select("#Can_P")
+//     .on("click", function() {
+//         //New values for dataset
+//         var dCan_P = dataset.features.map(function (d) {
+//                 return d.properties.Can_P
+//             });
+//         //Update all rects
+//         svgBar.selectAll("rect")
+//             .data(dCan_P)
+//             .transition()
+//             .duration(1000)
+//             .attr("y", function(d) {
+//                 return h - yScale(d);
+//             })
+//             .attr("height", function(d) {
+//                 return yScale(d);
+//             })
+//             .attr("fill", function(d) {   // <-- Down here!
+//                 return "rgb(0, 0, " + (d * 10) + ")";
+//             });
+        
+//         svgBar.selectAll("text")
+//             .data(dCan_P)
+//             .transition()
+//             .duration(3000)
+//             .text(function(d) {
+//                 return d3.round(d);
+//             })
+//             .attr("y", function(d) {
+//                 return h - yScale(d) + 14;              // +14
+//             })
+//             .attr("x", function(d, i) {
+//                 return xScale(i) + xScale.rangeBand() / 2;
+//             })
+//     });
+
+});  //end of D3.json call
+
 
