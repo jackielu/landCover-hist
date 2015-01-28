@@ -1,10 +1,42 @@
-// D3 code goes here - all based on examples from Scott Murray's Interactive Data Visualization for Web   http://chimera.labs.oreilly.com/books/1230000000345
+//d3 + Leaflet code based heavily on http://bost.ocks.org/mike/leaflet/
 
-//set variables for the SVG element
-var w = 3600;
-var h = 300;
+//SET UP OUR Leaflet map
+var map = L.map('map',{zoomControl:false}).setView([40.7056258,-73.97968], 11)
 
-// var wS = 800;
+var CartoDB_DarkMatter = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',{
+  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+    minZoom: 10,
+    maxZoom: 18
+}).addTo(map);
+
+
+//this adds a new zoom control in the specified position.  requires setting zoomControl:false in L.map
+L.control.zoom({position: "topright"}).addTo(map);
+
+
+//Add SVG element for map to Leaflet’s overlay pane. Leaflet automatically repositions the overlay pane when the map pans. SVG dimensions are set dynamically b/c they change on zoom. 
+var svgMap = d3.select(map.getPanes().overlayPane)
+    .append("svg");
+
+//"g" group element used to translate so that top-left corner of the SVG, ⟨0,0⟩, corresponds to Leaflet’s layer origin. The leaflet-zoom-hide class hides overlay during Leaflet’s zoom animation.
+var gMap = svgMap.append("g")
+    .attr("class", "leaflet-zoom-hide");
+
+
+
+// D3 graph / histogram code here all based on examples from Scott Murray's Interactive Data Visualization for Web   http://chimera.labs.oreilly.com/books/1230000000345 and D3.js Tips and Tricks by Malcolm Maclean
+
+//define the margin of the SVG element that is appended to the DOM as per Bostock's margin convention http://bl.ocks.org/mbostock/3019563
+var margin = {top: 30, right: 20, bottom: 30, left: 50};
+
+//dimension of the SVG rectangle for the bar chart
+var w = 3600 - margin.left - margin.right;
+var h = 300 - margin.top - margin.bottom;
+
+// //set variables for the SVG element
+// var w = 3600;
+// var h = 300;
+
 var wH = 900;
 
 var padding = 30;
@@ -25,9 +57,7 @@ var barPadding = 2;
 var dataset;
 var dataset2;
 
-// var layerID, dataID;  //var for saving button click IDs
 
-// var dataHist; //var for storing histogram values
 
 //CALL THE LandCover Summary DATA
 d3.json("data/landcoversumm.geojson", function(data) { //start of D3.json call
@@ -36,7 +66,6 @@ dataset = data;
 //window.dataset = dataset;
 //console.log(dataset);
 
-//BAR GRAPH d3 CODE
 //define variable for impervious cover
 var dImperv_P = dataset.features.map(function (d) {
     return d.properties.Imperv_P
@@ -68,6 +97,53 @@ var colorGrass = d3.scale.quantize()
     .range(["#e5e09b", "#cfcb8b", "#b9b67b", "#a4a16c", "#8f8d5d", "#7b794f", "#676641", "#545434", "#424227", "#31311c"])
     .domain([0, 100]);
 
+
+//CODE FOR MAP
+// create a d3.geo.path to convert GeoJSON to SVG:
+var transform = d3.geo.transform({point: projectPoint}),
+    path = d3.geo.path().projection(transform);
+
+// create path elements for each of the features using D3’s data join:
+var feature = gMap.selectAll("path")
+    .data(dataset.features)
+    .enter()
+    .append("path")
+    .attr("d",path)
+    .attr("fill", function(d) { return colorImperv(d.properties.Imperv_P); });
+
+// //assign a class to a D3 feature based on data attributes
+// feature.attr('id',function(d) {return d.properties.UniqueID;})
+//   .attr('class', function(d) {return d.properties.Imperv_P;})
+//   .attr('bin', function(d) {return colorCan(d.properties.Imperv_P);});
+
+map.on("viewreset", reset);
+reset();
+
+// Reposition the SVG to cover the features.  Comput the projected bounding box of our features using our custom transform to convert the longitude and latitude to pixels:
+function reset() {
+    var bounds = path.bounds(dataset),
+      topLeft = bounds[0],
+      bottomRight = bounds[1];
+      //here we are setting width and height of the attribute layer based on the bounds.  
+
+    //set the dimensions of the SVG with sufficient padding to display features above or to the left of the origin. this is part of "viewreset" event so SVG is repositioned and re-rendered whenever the map zooms
+    svgMap .attr("width", bottomRight[0] - topLeft[0])
+      .attr("height", bottomRight[1] - topLeft[1])
+      .style("left", topLeft[0] + "px")
+      .style("top", topLeft[1] + "px");
+    gMap   .attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+    //this is actually where we draw the shape on the map; out of the data that we passed turn this into an SVG attribute
+    feature.attr("d", path);
+}
+
+// Use Leaflet to implement a D3 geometric transformation. 
+function projectPoint(x, y) {
+    var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+    this.stream.point(point.x, point.y);
+}
+
+
+//d3 CODE FOR BAR CHART
 //define axes scales
 var xScale = d3.scale.ordinal()
     .domain(d3.range(dImperv_P.length))  //this creates as many values as the dataset is long
@@ -131,8 +207,7 @@ xAxis2 = svgBar.append("g")
     .call(xAxis);
 
 
-//code for creating histog
-
+//CODE FOR HISTOGRAM
 //define the histogram buckets and set xScale 
 var xScaleHist = d3.scale.linear()
     .domain([0,100])
@@ -203,7 +278,7 @@ svgHist.selectAll("text")
         })
     .attr("font-family", "sans-serif")
     .attr("font-size", "11px")
-    .attr("fill", "#4682B4")
+    .attr("fill", "#fff")
     .attr("text-anchor", "middle");
 
 //create the y axis
@@ -476,149 +551,6 @@ d3.select("#Grass_P") //start d3.select for #Grass_P
                 return yScaleHist(d.length) -10;              
             });
     });//end d3.select for Grass_P
-
-
-// //START update on click code
-// //listeners for layer li clicks
-// $(".layer").on("click", function() {
-//     console.log(this);
-//     layerID = $(this).attr("id");
-//     //window.layerID = layerID;
-//     console.log(layerID);
-//     //this switches the data values depending on the "id" of the clicked DOM element
-//     switch(layerID){
-//         case "Grass_P":
-//             thisDataSet = dGrass_P;
-//             break;
-//         case "Imperv_P":
-//             thisDataSet = dImperv_P;
-//             break;
-//         case "Can_P":
-//             thisDataSet = dCan_P;
-//             break;
-//     }
-//     //window.thisDataSet = thisDataSet;
-//     console.log(thisDataSet);
-//     // format the data into a histogram
-//     dataHist = d3.layout.histogram()
-//         .bins(xScaleHist.ticks(10))
-//         (thisDataSet);
-//     window.dataHist = dataHist;
-//     // update values for yScale of histogram
-//     var yScaleHist = d3.scale.linear()
-//         .domain([0, d3.max(dataHist, function(d) { return d.length; })])
-//         .range([h - padding, padding])
-//         .nice();
-
-//     //Update all histogram rect values with selected dataset
-//     svgHist.selectAll("rect")
-//         .data(dataHist)
-//         .transition()
-//         .duration(1000)
-//         .attr("y", function(d) {
-//             return yScaleHist(d.length);
-//         })
-//         .attr("height", function(d) {
-//             return (h - padding) - yScaleHist(d.length);
-//         });
-//     //style all histogram rect values based on color scale for selected dataset
-//     switch(layerID){
-//         case "Grass_P":
-//             svgHist.selectAll("rect")
-//                 .attr("fill", function(d){
-//                     return colorGrass(d.x);
-//                 })
-//                 .on('mouseover', function(d) {
-//                     d3.selectAll("[fill='"+colorGrass(d.x)+"']")
-//                     .style("fill","#F1B6DA");
-//                 })
-//                 .on('mouseout', function(d) {
-//                     d3.selectAll("[fill='"+colorGrass(d.x)+"']")
-//                     .style("fill", colorGrass(d.x));
-//                 });
-//             break;
-//         case "Imperv_P":
-//             svgHist.selectAll("rect")
-//                 .attr("fill", function(d){
-//                     return colorImperv(d.x);
-//                 })
-//                 .on('mouseover', function(d) {
-//                     d3.selectAll("[fill='"+colorImperv(d.x)+"']")
-//                     .style("fill","#F1B6DA");
-//                 })
-//                 .on('mouseout', function(d) {
-//                     d3.selectAll("[fill='"+colorImperv(d.x)+"']")
-//                     .style("fill", colorImperv(d.x));
-//                 });
-//             break;
-//         case "Can_P":
-//             svgHist.selectAll("rect")
-//                 .attr("fill", function(d){
-//                     return colorCan(d.x);
-//                 })
-//                 .on('mouseover', function(d) {
-//                     d3.selectAll("[fill='"+colorCan(d.x)+"']")
-//                     .style("fill","#F1B6DA");
-//                 })
-//                 .on('mouseout', function(d) {
-//                     d3.selectAll("[fill='"+colorCan(d.x)+"']")
-//                     .style("fill", colorCan(d.x));
-//                 });
-//             break;
-//     }
-//     //update histogram bar labels
-//     svgHist.selectAll("text")
-//         .data(dataHist)
-//         .transition()
-//         .duration(3000)
-//         .text(function(d) {
-//             return d3.round(d.length);
-//         })
-//         .attr("y", function(d) {
-//             return yScaleHist(d.length) -10;              
-//         });
-//     //update histogram axis scale
-//     yAxis.scale(yScaleHist);
-//     yAxis2.call(yAxis);
-//     //Update all BAR CHART rects
-//     svgBar.selectAll("rect")
-//         .data(thisDataSet)
-//         .transition()
-//         .duration(1000)
-//         .attr("y", function(d) {
-//             return h - yScale(d);
-//         })
-//         .attr("height", function(d) {
-//             return yScale(d);
-//         })
-//         .attr("fill", function(d) {
-//             switch(layerID){
-//                 case "Grass_P":
-//                     return colorGrass(d);
-//                     break;
-//                 case "Imperv_P":
-//                     return colorImperv(d);
-//                     break;
-//                 case "Can_P":
-//                     return  colorCan(d);
-//                     break;
-//             }
-//         });
-//     svgBar.selectAll("text")
-//         .data(thisDataSet)
-//         .transition()
-//         .duration(3000)
-//         .text(function(d) {
-//             return d3.round(d);
-//         })
-//         .attr("y", function(d) {
-//             return h - yScale(d) + 14;              // +14
-//         })
-//         .attr("x", function(d, i) {
-//             return xScale(i) + xScale.rangeBand() / 2;
-//         })
-// }) //END update on click code
-
 
 });  //end of D3.json call
 

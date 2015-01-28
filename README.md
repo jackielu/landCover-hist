@@ -10,17 +10,19 @@ COMPLETED BITS
 4) break code up into different files
 5) hover interactivity btwn histogram and bar graph
 6) transitions to axis
+7) added map
 
 
 IN PROGRESS
+... adding axes to the graphs.  need to add in missing "g" elements and a proper set of margins, maybe?  
 
+... adding interactivity btwn map and bar charts
 
 
 
 TO BE DONE BITS
 ...  add the cover types that remain
 ...  work in the skeleton styling
-...  add the map
 ...  add zoom on NTA click
 ...  add pop-up graph for NTA
 ...  add new layers

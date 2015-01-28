@@ -2,13 +2,16 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>D3 Page Template</title>
+        <title>Land Cover Data</title>
 <!--         <script type="text/javascript" src="../d3.v3.js"></script> -->    
         <link rel="stylesheet" href="css/styles.css">
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 
 
     </head>
     <body>
+        <div id="map"></div> 
+
         <div id="histDiv">
             <ul id="utcMetric"> 
                 <li class = "layer" id = "Can_P"> Percent Canopy </li>
@@ -21,6 +24,7 @@
         </div>
 
         <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script src="js/script.js"></script> 
     </body>
