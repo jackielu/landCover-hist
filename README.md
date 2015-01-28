@@ -10,13 +10,11 @@ COMPLETED BITS
 4) break code up into different files
 5) hover interactivity btwn histogram and bar graph
 6) transitions to axis
-7) added map
+7) added map and interactivity
 
 
 IN PROGRESS
 ... adding axes to the graphs.  need to add in missing "g" elements and a proper set of margins, maybe?  
-
-... adding interactivity btwn map and bar charts
 
 
 

@@ -109,7 +109,15 @@ var feature = gMap.selectAll("path")
     .enter()
     .append("path")
     .attr("d",path)
-    .attr("fill", function(d) { return colorImperv(d.properties.Imperv_P); });
+    .attr("fill", function (d) { return colorImperv(d.properties.Imperv_P); })
+    .on('mouseover', function (d) {
+        d3.selectAll("[fill='"+colorImperv(d.properties.Imperv_P)+"']")
+        .style("fill","#F1B6DA");
+    })
+    .on('mouseout', function (d) {
+        d3.selectAll("[fill='"+colorImperv(d.properties.Imperv_P)+"']")
+        .style("fill",colorImperv(d.properties.Imperv_P));
+    });
 
 // //assign a class to a D3 feature based on data attributes
 // feature.attr('id',function(d) {return d.properties.UniqueID;})
