@@ -13,9 +13,11 @@ COMPLETED BITS
 7) added map and interactivity
 
 
-IN PROGRESS
-... adding axes to the graphs.  need to add in missing "g" elements and a proper set of margins, maybe?  
+IN PROGRESS  
 
+... update clicks to also update map data
+
+... adding axes to the graphs.  need to add in missing "g" elements and a proper set of margins, maybe?
 
 
 TO BE DONE BITS

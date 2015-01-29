@@ -67,19 +67,13 @@ dataset = data;
 //console.log(dataset);
 
 //define variable for impervious cover
-var dImperv_P = dataset.features.map(function (d) {
-    return d.properties.Imperv_P
-});
+var dImperv_P = dataset.features.map(function (d) { return d.properties.Imperv_P });
 //window.dImperv_P = dImperv_P;
 // console.log(dImperv_P);
 
-var dGrass_P = dataset.features.map(function (d) {
-    return d.properties.Grass_P
-});
+var dGrass_P = dataset.features.map(function (d) { return d.properties.Grass_P });
 
-var dCan_P = dataset.features.map(function (d) {
-    return d.properties.Can_P
-});
+var dCan_P = dataset.features.map(function (d) { return d.properties.Can_P });
 
 //SET UP THE COLOR SCALES THAT TAKE INPUT VALUE AND OUTPUT A COLOR
 //color scale for Imperv_P value
@@ -109,15 +103,17 @@ var feature = gMap.selectAll("path")
     .enter()
     .append("path")
     .attr("d",path)
-    .attr("fill", function (d) { return colorImperv(d.properties.Imperv_P); })
-    .on('mouseover', function (d) {
-        d3.selectAll("[fill='"+colorImperv(d.properties.Imperv_P)+"']")
-        .style("fill","#F1B6DA");
-    })
-    .on('mouseout', function (d) {
-        d3.selectAll("[fill='"+colorImperv(d.properties.Imperv_P)+"']")
-        .style("fill",colorImperv(d.properties.Imperv_P));
-    });
+    .attr("fill", function (d) { return colorImperv(d.properties.Imperv_P) })
+    // .on('mouseover', function (d) {
+    //     d3.selectAll("[fill='"+colorImperv(d.properties.Imperv_P)+"']")
+    //     .style("fill","#F1B6DA");
+    // })
+    // .on('mouseout', function (d) {
+    //     d3.selectAll("[fill='"+colorImperv(d.properties.Imperv_P)+"']")
+    //     .style("fill",colorImperv(d.properties.Imperv_P));
+    // })
+    ;
+
 
 // //assign a class to a D3 feature based on data attributes
 // feature.attr('id',function(d) {return d.properties.UniqueID;})
@@ -177,7 +173,7 @@ svgBar.selectAll("rect")
         return yScale(d);
     })
     .attr("fill", function(d) {
-        return colorImperv(d);
+        return colorImperv(d)
     })
     .on('mouseover', function (d) {
         d3.selectAll("[fill='"+colorImperv(d)+"']")
@@ -308,15 +304,9 @@ d3.select("#Can_P") //start d3.select for #Can_P
             .data(dCan_P)
             .transition()
             .duration(1000)
-            .attr("y", function(d) {
-                return h - yScale(d);
-            })
-            .attr("height", function(d) {
-                return yScale(d);
-            })
-            .attr("fill", function(d) {   
-                return colorCan(d);
-            });
+            .attr("y", function(d) { return h - yScale(d); })
+            .attr("height", function(d) { return yScale(d); })
+            .attr("fill", function(d) { return colorCan(d); });
 
         svgBar.selectAll("rect")
             .on('mouseover', function (d) {
@@ -332,15 +322,9 @@ d3.select("#Can_P") //start d3.select for #Can_P
             .data(dCan_P)
             .transition()
             .duration(3000)
-            .text(function(d) {
-                return d3.round(d);
-            })
-            .attr("y", function(d) {
-                return h - yScale(d) + 14;              // +14
-            })
-            .attr("x", function(d, i) {
-                return xScale(i) + xScale.rangeBand() / 2;
-            })
+            .text(function(d) { return d3.round(d); })
+            .attr("y", function(d) { return h - yScale(d) + 14; })
+            .attr("x", function(d, i) { return xScale(i) + xScale.rangeBand() / 2; })
 
         yScaleHist = d3.scale.linear()
             .domain([0, d3.max(dCanHist, function(d) { return d.length; })])
@@ -355,15 +339,9 @@ d3.select("#Can_P") //start d3.select for #Can_P
             .data(dCanHist)
             .transition()
             .duration(1000)
-            .attr("y", function(d) {
-                return yScaleHist(d.length);
-            })
-            .attr("height", function(d) {
-                return (h - padding) - yScaleHist(d.length);
-            })
-            .attr("fill", function(d){
-                return colorCan(d.x);
-            });
+            .attr("y", function(d) { return yScaleHist(d.length); })
+            .attr("height", function(d) { return (h - padding) - yScaleHist(d.length); })
+            .attr("fill", function(d){ return colorCan(d.x); });
 
         svgHist.selectAll("rect")
             .on('mouseover', function(d) {
@@ -379,12 +357,14 @@ d3.select("#Can_P") //start d3.select for #Can_P
             .data(dCanHist)
             .transition()
             .duration(3000)
-            .text(function(d) {
-                return d3.round(d.length);
-            })
-            .attr("y", function(d) {
-                return yScaleHist(d.length) -10;              
-            });
+            .text(function(d) { return d3.round(d.length); })
+            .attr("y", function(d) { return yScaleHist(d.length) -10; });
+        //update the map
+        gMap.selectAll("path")
+            .transition()
+            .duration(2000)
+            .attr("fill", function (d) { return colorCan(d.properties.Can_P) })
+
     });//end d3.select for Can_P
 
 d3.select("#Imperv_P") //start d3.select for #Imperv_P
@@ -394,9 +374,7 @@ d3.select("#Imperv_P") //start d3.select for #Imperv_P
             .data(dImperv_P)
             .transition()
             .duration(1000)
-            .attr("y", function(d) {
-                return h - yScale(d);
-            })
+            .attr("y", function(d) { return h - yScale(d); })
             .attr("height", function(d) {
                 return yScale(d);
             })
@@ -471,6 +449,11 @@ d3.select("#Imperv_P") //start d3.select for #Imperv_P
             .attr("y", function(d) {
                 return yScaleHist(d.length) -10;              
             });
+        //update the map
+        gMap.selectAll("path")
+            .transition()
+            .duration(2000)
+            .attr("fill", function (d) { return colorImperv(d.properties.Imperv_P) })
     });//end d3.select for Imperv_P
 
 d3.select("#Grass_P") //start d3.select for #Grass_P
@@ -558,6 +541,11 @@ d3.select("#Grass_P") //start d3.select for #Grass_P
             .attr("y", function(d) {
                 return yScaleHist(d.length) -10;              
             });
+        //update the map
+        gMap.selectAll("path")
+            .transition()
+            .duration(2000)
+            .attr("fill", function (d) { return colorGrass(d.properties.Grass_P) })
     });//end d3.select for Grass_P
 
 });  //end of D3.json call
