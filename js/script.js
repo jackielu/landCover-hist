@@ -39,6 +39,7 @@ var h = 300 - margin.top - margin.bottom;
 
 var wH = 900;
 
+//padding value to push the elements in away from the edges of the SVG
 var padding = 30;
 
 //create the SVG element appended to the body of the page
@@ -296,6 +297,19 @@ var yAxisHist2 = svgHist.append("g")
         .attr("transform", "translate(" + padding + ",0)")
         .call(yAxisHist);
 
+//create the x axis
+var xAxisHist = d3.svg.axis()
+  .scale(xScaleHist)
+  .orient("bottom")
+  .tickFormat(function(d) { return d + "%"; });
+
+var xAxisHist = svgHist.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + ( h - padding ) + ")")
+    .call(xAxisHist);
+
+
+
 //  D3 based CODE FOR UPDATE ON CLICK
 d3.select("#Can_P") //start d3.select for #Can_P
     .on("click", function() {
@@ -375,12 +389,8 @@ d3.select("#Imperv_P") //start d3.select for #Imperv_P
             .transition()
             .duration(1000)
             .attr("y", function(d) { return h - yScale(d); })
-            .attr("height", function(d) {
-                return yScale(d);
-            })
-            .attr("fill", function(d) {   
-                return colorImperv(d);
-            });
+            .attr("height", function(d) { return yScale(d); })
+            .attr("fill", function(d) { return colorImperv(d); });
 
         svgBar.selectAll("rect")
             .on('mouseover', function (d) {
@@ -396,15 +406,9 @@ d3.select("#Imperv_P") //start d3.select for #Imperv_P
             .data(dImperv_P)
             .transition()
             .duration(3000)
-            .text(function(d) {
-                return d3.round(d);
-            })
-            .attr("y", function(d) {
-                return h - yScale(d) + 14;             
-            })
-            .attr("x", function(d, i) {
-                return xScale(i) + xScale.rangeBand() / 2;
-            })
+            .text(function(d) { return d3.round(d); })
+            .attr("y", function(d) { return h - yScale(d) + 14; })
+            .attr("x", function(d, i) { return xScale(i) + xScale.rangeBand() / 2; })
 
         yScaleHist = d3.scale.linear()
             .domain([0, d3.max(dImpervHist, function(d) { return d.length; })])
@@ -419,15 +423,9 @@ d3.select("#Imperv_P") //start d3.select for #Imperv_P
             .data(dImpervHist)
             .transition()
             .duration(1000)
-            .attr("y", function(d) {
-                return yScaleHist(d.length);
-            })
-            .attr("height", function(d) {
-                return (h - padding) - yScaleHist(d.length);
-            })
-            .attr("fill", function(d){
-                return colorImperv(d.x);
-            });
+            .attr("y", function(d) { return yScaleHist(d.length); })
+            .attr("height", function(d) { return (h - padding) - yScaleHist(d.length); })
+            .attr("fill", function(d){ return colorImperv(d.x); });
 
         svgHist.selectAll("rect")
             .on('mouseover', function(d) {

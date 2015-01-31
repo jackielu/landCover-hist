@@ -19,6 +19,8 @@ IN PROGRESS
 
 ... adding axes to the graphs.  need to add in missing "g" elements and a proper set of margins, maybe?
 
+... have ticks - where are the lines??
+
 
 TO BE DONE BITS
 ...  add the cover types that remain
