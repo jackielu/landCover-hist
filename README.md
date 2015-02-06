@@ -21,6 +21,8 @@ IN PROGRESS
 
 ... have ticks - where are the lines??
 
+*** not working properly *** occassionally when the buttons are clicked - color ramps for the histogram or bar chart does not completely update.
+
 
 TO BE DONE BITS
 ...  add the cover types that remain
