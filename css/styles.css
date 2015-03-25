@@ -6,6 +6,11 @@
     font-size: 11px;
 }
 
+/* active class for map feature as per http://bl.ocks.org/mbostock/4699541*/
+.feature.active {
+  fill: orange;
+}
+
 
 body {
     background-color: #242426;

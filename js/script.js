@@ -33,6 +33,10 @@ var margin = {top: 30, right: 20, bottom: 30, left: 50};
 var w = 3600 - margin.left - margin.right;
 var h = 300 - margin.top - margin.bottom;
 
+//needed for zoom to bounding on click as per http://bl.ocks.org/mbostock/4699541
+var active = d3.select(null);
+
+
 // //set variables for the SVG element
 // var w = 3600;
 // var h = 300;
@@ -105,14 +109,15 @@ var feature = gMap.selectAll("path")
     .append("path")
     .attr("d",path)
     .attr("fill", function (d) { return colorImperv(d.properties.Imperv_P) })
-    // .on('mouseover', function (d) {
-    //     d3.selectAll("[fill='"+colorImperv(d.properties.Imperv_P)+"']")
-    //     .style("fill","#F1B6DA");
-    // })
-    // .on('mouseout', function (d) {
-    //     d3.selectAll("[fill='"+colorImperv(d.properties.Imperv_P)+"']")
-    //     .style("fill",colorImperv(d.properties.Imperv_P));
-    // })
+    .on('mouseover', function (d) {
+        d3.selectAll("[fill='"+colorImperv(d.properties.Imperv_P)+"']")
+        .style("fill","#F1B6DA");
+    })
+    .on('mouseout', function (d) {
+        d3.selectAll("[fill='"+colorImperv(d.properties.Imperv_P)+"']")
+        .style("fill",colorImperv(d.properties.Imperv_P));
+    })
+    .on('click', clicked)
     ;
 
 
@@ -145,6 +150,26 @@ function reset() {
 function projectPoint(x, y) {
     var point = map.latLngToLayerPoint(new L.LatLng(y, x));
     this.stream.point(point.x, point.y);
+}
+
+//zoom to bounding box function as per http://bl.ocks.org/mbostock/4699541//
+function clicked(d) {
+  if (active.node() === this) return reset();
+  active.classed("active", false);
+  active = d3.select(this).classed("active", true);
+
+  var bounds = path.bounds(d),
+      dx = bounds[1][0] - bounds[0][0],
+      dy = bounds[1][1] - bounds[0][1],
+      x = (bounds[0][0] + bounds[1][0]) / 2,
+      y = (bounds[0][1] + bounds[1][1]) / 2,
+      scale = .9 / Math.max(dx / w, dy / h),
+      translate = [w / 2 - scale * x, h / 2 - scale * y];
+
+  g.transition()
+      .duration(750)
+      .style("stroke-width", 1.5 / scale + "px")
+      .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
 }
 
 

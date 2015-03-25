@@ -13,8 +13,18 @@ COMPLETED BITS
 7) added map and interactivity
 
 
+
 IN PROGRESS  
 
+Implement zoom to bounding box on click as per
+http://bl.ocks.org/mbostock/4699541
+  ? should you get rid of leaflet?  do you need it here?
+  ? or do you combine the "clicked" bounding box code with that in http://bost.ocks.org/mike/leaflet/
+
+  -> actually this one is better  http://bl.ocks.org/mbostock/9656675
+
+
+NOT FINISHED STUFF
 ... update clicks to also update map data
 
 ... adding axes to the graphs.  need to add in missing "g" elements and a proper set of margins, maybe?
@@ -24,9 +34,9 @@ IN PROGRESS
 *** not working properly *** occassionally when the buttons are clicked - color ramps for the histogram or bar chart does not completely update.
 
 
+
 TO BE DONE BITS
 ...  add the cover types that remain
 ...  work in the skeleton styling
-...  add zoom on NTA click
 ...  add pop-up graph for NTA
 ...  add new layers
